@@ -338,7 +338,7 @@ def _resolve_json_schema_reference(schema: dict) -> dict:
 
 def convert_input_schema_to_tool_args(
     schema: dict[str, Any],
-) -> tuple[dict[str, Any], dict[str, Type], dict[str, str]]:
+) -> tuple[dict[str, Any] | None, dict[str, Type] | None, dict[str, str] | None]:
     """Convert an input json schema to tool arguments compatible with DSPy Tool.
 
     Args:
@@ -347,7 +347,7 @@ def convert_input_schema_to_tool_args(
     Returns:
         A tuple of (args, arg_types, arg_desc) for DSPy Tool definition.
     """
-    args, arg_types, arg_desc = {}, {}, {}
+    args, arg_types, arg_desc = None, None, None
     properties = schema.get("properties", None)
     if properties is None:
         return args, arg_types, arg_desc
@@ -356,6 +356,8 @@ def convert_input_schema_to_tool_args(
 
     defs = schema.get("$defs", {})
 
+    if properties:
+        args, arg_types, arg_desc = {}, {}, {}
     for name, prop in properties.items():
         if len(defs) > 0:
             prop = _resolve_json_schema_reference({"$defs": defs, **prop})
