@@ -111,8 +111,8 @@ class Tool(Type):
 
         self.name = self.name or name
         self.desc = self.desc or desc
-        self.args = self.args or args
-        self.arg_types = self.arg_types or arg_types
+        self.args = self.args if self.args is not None else args
+        self.arg_types = self.arg_types if self.arg_types is not None else arg_types
         self.has_kwargs = any(param.kind == param.VAR_KEYWORD for param in sig.parameters.values())
 
     def _validate_and_parse_args(self, **kwargs):
@@ -338,7 +338,7 @@ def _resolve_json_schema_reference(schema: dict) -> dict:
 
 def convert_input_schema_to_tool_args(
     schema: dict[str, Any],
-) -> tuple[dict[str, Any] | None, dict[str, Type] | None, dict[str, str] | None]:
+) -> tuple[dict[str, Any], dict[str, Type], dict[str, str]]:
     """Convert an input json schema to tool arguments compatible with DSPy Tool.
 
     Args:
@@ -347,7 +347,7 @@ def convert_input_schema_to_tool_args(
     Returns:
         A tuple of (args, arg_types, arg_desc) for DSPy Tool definition.
     """
-    args, arg_types, arg_desc = None, None, None
+    args, arg_types, arg_desc = {}, {}, {}
     properties = schema.get("properties", None)
     if properties is None:
         return args, arg_types, arg_desc
@@ -356,8 +356,6 @@ def convert_input_schema_to_tool_args(
 
     defs = schema.get("$defs", {})
 
-    if properties:
-        args, arg_types, arg_desc = {}, {}, {}
     for name, prop in properties.items():
         if len(defs) > 0:
             prop = _resolve_json_schema_reference({"$defs": defs, **prop})

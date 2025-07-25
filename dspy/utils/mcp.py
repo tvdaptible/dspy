@@ -44,8 +44,4 @@ def convert_mcp_tool(session: "mcp.client.session.ClientSession", tool: "mcp.typ
         result = await session.call_tool(tool.name, arguments=kwargs)
         return _convert_mcp_tool_result(result)
 
-    async def _no_arg_func():
-        result = await session.call_tool(tool.name)
-        return _convert_mcp_tool_result(result)
-
-    return Tool(func=func if args is not None else _no_arg_func, name=tool.name, desc=tool.description, args=args, arg_types=arg_types, arg_desc=arg_desc)
+    return Tool(func=func, name=tool.name, desc=tool.description, args=args, arg_types=arg_types, arg_desc=arg_desc)

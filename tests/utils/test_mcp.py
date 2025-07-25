@@ -94,5 +94,5 @@ async def test_convert_mcp_tool():
             assert current_datetime_tool.desc == "Get the current datetime"
             assert current_datetime_tool.args == {}
             assert current_datetime_tool.arg_types == {}
-            assert current_datetime_tool.arg_desc == None
+            assert current_datetime_tool.arg_desc == {}
             assert await current_datetime_tool.acall() == "2025-07-23T09:10:10.0+00:00"

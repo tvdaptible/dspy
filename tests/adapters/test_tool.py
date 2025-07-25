@@ -461,9 +461,9 @@ def test_tool_calls_format_from_dict_list():
 
 def test_tool_convert_input_schema_to_tool_args__no_input_params():
     args, arg_types, arg_desc = convert_input_schema_to_tool_args(schema={"properties": {}})
-    assert args is None
-    assert arg_types is None
-    assert arg_desc is None
+    assert args == {}
+    assert arg_types == {}
+    assert arg_desc == {}
 
 
 def test_tool_convert_input_schema_to_tool_args__lang_chain():
